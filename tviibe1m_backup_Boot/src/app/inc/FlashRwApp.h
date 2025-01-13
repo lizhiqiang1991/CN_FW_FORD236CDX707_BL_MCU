@@ -1,0 +1,75 @@
+/******************************************************************************
+;       Program		: FlashRwApp.h
+;       Function	: Declare and Define Flash R/W Function
+;       Chip		: Cypress CYT2B6
+;       Clock		:
+;       Date		: 2021 / 10 / 08
+;       Author		: Joel Wang
+******************************************************************************/
+#ifndef FlashRwApp_H
+#define FlashRwApp_H
+/*---------------------------- Define Constant -------------------------------*/
+#define		SIZE_ERASE_256B				256U
+#define		SIZE_WRITE_1KB				1024U
+#define		SIZE_WRITE_64B				64U
+#define		SIZE_READ_THRESHOLD			256U
+#define		SIZE_128B_PAGE				128U
+
+#define		SIZE_FIDM_VER				2U
+
+#define		ADDR_CODEFLASH_L1			0x10008000UL
+#define		ADDR_CODEFLASH_L8			0x10040000UL
+
+#define		ADDR_CODEFLASH_S63			0x1400DF80UL
+#define		ADDR_PART_FLAG				ADDR_WorkFlash_S6
+
+#define		APP1_START_ADDR				0x10010000U
+#define		APP2_START_ADDR				0x10028000U
+
+
+
+
+//Sector Number 			    Address			Size (Byte)        	
+#define	ADDR_WorkFlash_S0		0x1400C000UL		//128	<--Bank 0       
+#define	ADDR_WorkFlash_S1		0x1400C080UL		//256	                
+#define	ADDR_WorkFlash_S2		0x1400C100UL		//384	                
+#define	ADDR_WorkFlash_S3		0x1400C180UL		//512	                
+#define	ADDR_WorkFlash_S4		0x1400C200UL		//640	                
+#define	ADDR_WorkFlash_S5		0x1400C280UL		//768	                
+#define	ADDR_WorkFlash_S6		0x1400C300UL		//896	                
+#define	ADDR_WorkFlash_S7		0x1400C380UL		//1024	 
+#define	ADDR_WorkFlash_S8		0x1400C400UL		//1152	 
+
+#define CoreAssemblyAddr        ADDR_WorkFlash_S1  // 0x31h, 25byte
+#define APP_AREA_Config_Addr    ADDR_WorkFlash_S6
+#define UPDATE_REQUEST_Addr     ADDR_WorkFlash_S7
+#define BL_Version_Addr        	ADDR_WorkFlash_S8  // 8byte
+
+/*---------------------------- Enum Declare ----------------------------------*/
+enum FlashRwAppStatus
+{
+	FLASH_FINISH = 0U,
+	FLASH_FAIL = 1U
+};
+	
+enum ByteOrder
+{
+	BYTE_L = 0U,
+	BYTE_M0 = 1U,
+	BYTE_M1 = 2U,
+	BYTE_H = 3U
+};
+
+/*---------------------------- Declare Function ------------------------------*/
+uint8_t FlashRwApp_Initial(void);
+uint8_t FlashRwApp_128B_Page_Compare(uint32_t u32StartAddr, uint8_t *pu8SrcBuff);
+uint8_t FlashRwApp_128B_Page_Write(uint32_t u32StartAddr, uint8_t *pu8DataBuff);
+uint8_t FlashRwApp_Sector_Erase(uint32_t u32StartAddr);
+uint8_t FlashRwApp_Read(uint32_t u32DestAddr, uint32_t u32ReadByteLen, uint8_t *pu8DataBuff);
+void FlashRwApp_App_Infor_Read(void);
+uint8_t FlashRwApp_App_Area_Get(void);
+uint8_t FlashRwApp_Whether_Update_Get(void);
+void FlashRwApp_Clear_Update_Key(void);
+void FlashRwApp_Change_App_Update_Area(void);
+void FlashRwApp_BootVersion_Check(uint8_t *pu8BLVerBuff);
+#endif
